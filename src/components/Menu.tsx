@@ -87,16 +87,17 @@ const Menu: React.FC<MenuProps> = ({ menuItems, addToCart, cartItems, updateQuan
 
   return (
     <>
-      <MobileNav 
-        activeCategory={activeCategory}
-        onCategoryClick={handleCategoryClick}
-      />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="text-center mb-12">
-        <h2 className="text-4xl font-noto font-semibold text-black mb-4">Our Menu</h2>
-        <p className="text-gray-600 max-w-2xl mx-auto">
-          Discover our selection of authentic dim sum, flavorful noodles, and traditional Asian dishes, 
-          all prepared with fresh ingredients and authentic techniques.
+      <div className="text-center mb-12 relative">
+        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -z-10">
+          <div className="w-32 h-32 bg-baker-gold rounded-full opacity-20 blur-2xl"></div>
+        </div>
+        <h2 className="text-5xl font-fredoka font-bold text-baker-brown-dark mb-4 relative">
+          <span className="relative z-10">Our Fresh Baked Menu</span>
+        </h2>
+        <p className="text-baker-brown text-lg max-w-2xl mx-auto font-nunito">
+          Discover our selection of freshly baked breads, pastries, and sweet treats, 
+          all made with love and the finest ingredients.
         </p>
       </div>
 
@@ -107,12 +108,13 @@ const Menu: React.FC<MenuProps> = ({ menuItems, addToCart, cartItems, updateQuan
         
         return (
           <section key={category.id} id={category.id} className="mb-16">
-            <div className="flex items-center mb-8">
-              <span className="text-3xl mr-3">{category.icon}</span>
-              <h3 className="text-3xl font-noto font-medium text-black">{category.name}</h3>
+            <div className="flex items-center mb-8 relative">
+              <div className="absolute -left-4 w-2 h-12 bg-baker-orange rounded-full"></div>
+              <span className="text-4xl mr-4">{category.icon}</span>
+              <h3 className="text-4xl font-fredoka font-bold text-baker-brown-dark border-b-4 border-baker-gold pb-2">{category.name}</h3>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 gap-8">
               {categoryItems.map((item) => {
                 const cartItem = cartItems.find(cartItem => cartItem.id === item.id);
                 return (

@@ -4,27 +4,42 @@ export default {
   theme: {
     extend: {
       colors: {
-        ramen: {
-          red: '#D7263D',
-          dark: '#0B0A0A',
-          charcoal: '#111113',
-          cream: '#FFF3E0',
-          beige: '#F7E7CE',
+        baker: {
+          beige: '#F5F0E8',
+          'beige-light': '#FAF7F2',
+          'beige-dark': '#E8E0D4',
           gold: '#E0A106',
-          sesame: '#D1C7B7',
-          seaweed: '#1F2937',
-          kimchi: '#B81D24'
+          'gold-light': '#F4C430',
+          orange: '#FF8C42',
+          'orange-light': '#FFA366',
+          brown: '#8B6F47',
+          'brown-dark': '#5C4033',
+          'brown-light': '#A0826D',
+          teal: '#4ECDC4',
+          'teal-light': '#7EDDD6',
+          green: '#90EE90',
+          'green-light': '#B0F5B0',
+          red: '#D7263D',
+          'red-dark': '#B81D24',
+          yellow: '#FFD700',
+          'yellow-light': '#FFE44D'
         }
       },
       fontFamily: {
-        'pretendard': ['Pretendard', 'system-ui', 'sans-serif'],
-        'noto-kr': ['Noto Serif KR', 'serif']
+        'nunito': ['Nunito', 'system-ui', 'sans-serif'],
+        'comic': ['Comic Neue', 'cursive'],
+        'fredoka': ['Fredoka', 'sans-serif']
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in-out',
         'slide-up': 'slideUp 0.4s ease-out',
         'bounce-gentle': 'bounceGentle 0.6s ease-out',
-        'scale-in': 'scaleIn 0.3s ease-out'
+        'scale-in': 'scaleIn 0.3s ease-out',
+        'float': 'float 3s ease-in-out infinite',
+        'wiggle': 'wiggle 1s ease-in-out infinite'
+      },
+      borderWidth: {
+        '3': '3px',
       },
       keyframes: {
         fadeIn: {
@@ -43,6 +58,14 @@ export default {
         scaleIn: {
           '0%': { transform: 'scale(0.95)', opacity: '0' },
           '100%': { transform: 'scale(1)', opacity: '1' }
+        },
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-10px)' }
+        },
+        wiggle: {
+          '0%, 100%': { transform: 'rotate(-3deg)' },
+          '50%': { transform: 'rotate(3deg)' }
         }
       }
     },

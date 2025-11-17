@@ -1,23 +1,120 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const Hero: React.FC = () => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const features = [
+    {
+      icon: (
+        <svg className="w-16 h-16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      ),
+      title: "Freshly Baked Daily",
+      description: "Our bakery starts early every morning to bring you the freshest breads and pastries. Baked with love and served warm, ensuring every bite is perfect."
+    },
+    {
+      icon: (
+        <svg className="w-16 h-16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+        </svg>
+      ),
+      title: "All-Natural Ingredients",
+      description: "We use only the finest natural ingredients in our recipes. No artificial preservatives, no shortcuts—just pure, wholesome goodness in every bite."
+    },
+    {
+      icon: (
+        <svg className="w-16 h-16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+        </svg>
+      ),
+      title: "Made with Love",
+      description: "Every loaf, every pastry, every treat is crafted with passion and care. Experience the warmth and comfort of traditional baking in every product we offer."
+    }
+  ];
+
+  // Auto-advance carousel
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % features.length);
+    }, 5000); // Change slide every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [features.length]);
+
+  const goToSlide = (index: number) => {
+    setCurrentSlide(index);
+  };
+
+  const goToPrevious = () => {
+    setCurrentSlide((prev) => (prev - 1 + features.length) % features.length);
+  };
+
+  const goToNext = () => {
+    setCurrentSlide((prev) => (prev + 1) % features.length);
+  };
+
   return (
-    <section className="relative bg-gradient-to-br from-ramen-cream to-white py-20 px-4">
-      <div className="max-w-4xl mx-auto text-center">
-        <h1 className="text-5xl md:text-6xl font-noto-kr font-semibold text-ramen-dark mb-6 animate-fade-in">
-          Bold Korean Flavors, Slurpy Ramen Bowls
-          <span className="block text-ramen-red mt-2">Ramen Yard</span>
-        </h1>
-        <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto animate-slide-up">
-          Handcrafted broths, springy noodles, Korean street-food favorites.
-        </p>
-        <div className="flex justify-center">
-          <a 
-            href="#ramen"
-            className="bg-ramen-red text-white px-8 py-3 rounded-full hover:bg-ramen-kimchi transition-all duration-300 transform hover:scale-105 font-medium"
+    <section className="bg-baker-beige py-12 px-4 relative">
+      <div className="max-w-4xl mx-auto">
+        {/* Carousel Container */}
+        <div className="relative overflow-hidden rounded-lg">
+          <div 
+            className="flex transition-transform duration-500 ease-in-out"
+            style={{ transform: `translateX(-${currentSlide * 100}%)` }}
           >
-            Explore Menu
-          </a>
+            {features.map((feature, index) => (
+              <div 
+                key={index} 
+                className="min-w-full bg-baker-beige-light rounded-lg p-8 md:p-12 text-center"
+              >
+                <div className="flex justify-center mb-6">
+                  <div className="text-baker-brown-dark">
+                    {feature.icon}
+                  </div>
+                </div>
+                <h3 className="text-2xl md:text-3xl font-bold text-baker-brown-dark mb-4 font-fredoka">
+                  {feature.title}
+                </h3>
+                <p className="text-sm md:text-base text-baker-brown leading-relaxed max-w-2xl mx-auto font-nunito">
+                  {feature.description}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* Navigation Arrows */}
+          <button
+            onClick={goToPrevious}
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-baker-beige-light/90 hover:bg-baker-beige-light text-baker-brown-dark p-2 rounded-full shadow-lg transition-all duration-200 z-10"
+            aria-label="Previous slide"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+          <button
+            onClick={goToNext}
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-baker-beige-light/90 hover:bg-baker-beige-light text-baker-brown-dark p-2 rounded-full shadow-lg transition-all duration-200 z-10"
+            aria-label="Next slide"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
+        </div>
+
+        {/* Dots Indicator */}
+        <div className="flex justify-center mt-6 space-x-2">
+          {features.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => goToSlide(index)}
+              className={`transition-all duration-300 rounded-full ${
+                currentSlide === index
+                  ? 'w-8 h-2 bg-baker-brown-dark'
+                  : 'w-2 h-2 bg-baker-brown-dark/30 hover:bg-baker-brown-dark/50'
+              }`}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
         </div>
       </div>
     </section>
