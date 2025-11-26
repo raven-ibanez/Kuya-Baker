@@ -150,7 +150,7 @@ Please confirm this order to proceed. Thank you for choosing Kuya Baker! 🥟
     `.trim();
 
     const encodedMessage = encodeURIComponent(orderDetails);
-    const messengerUrl = `https://m.me/61579693577478?text=${encodedMessage}`;
+    const messengerUrl = `https://m.me/463644283495431?text=${encodedMessage}`;
     
     window.open(messengerUrl, '_blank');
     

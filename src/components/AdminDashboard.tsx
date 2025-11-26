@@ -73,6 +73,11 @@ const AdminDashboard: React.FC = () => {
       return;
     }
 
+    if ((formData.description || '').length > 100) {
+      alert('Description cannot exceed 100 characters');
+      return;
+    }
+
     try {
       if (editingItem) {
         await updateMenuItem(editingItem.id, formData);
@@ -455,14 +460,28 @@ const AdminDashboard: React.FC = () => {
             </div>
 
             <div className="mb-8">
-              <label className="block text-sm font-medium text-black mb-2">Description *</label>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-sm font-medium text-black">Description *</label>
+                <span className={`text-sm ${(formData.description || '').length > 100 ? 'text-red-500' : 'text-gray-500'}`}>
+                  {(formData.description || '').length}/100
+                </span>
+              </div>
               <textarea
                 value={formData.description || ''}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value.length <= 100) {
+                    setFormData({ ...formData, description: value });
+                  }
+                }}
+                maxLength={100}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 placeholder="Enter item description"
                 rows={3}
               />
+              {(formData.description || '').length > 100 && (
+                <p className="text-sm text-red-500 mt-1">Description cannot exceed 100 characters</p>
+              )}
             </div>
 
             <div className="mb-8">
