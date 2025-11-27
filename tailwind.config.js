@@ -5,24 +5,40 @@ export default {
     extend: {
       colors: {
         baker: {
-          beige: '#F5F0E8',
-          'beige-light': '#FAF7F2',
-          'beige-dark': '#E8E0D4',
-          gold: '#E0A106',
-          'gold-light': '#F4C430',
-          orange: '#FF8C42',
-          'orange-light': '#FFA366',
-          brown: '#8B6F47',
-          'brown-dark': '#5C4033',
-          'brown-light': '#A0826D',
-          teal: '#4ECDC4',
-          'teal-light': '#7EDDD6',
+          // Primary Palette - Modern Filipino
+          'butter-yellow': '#FFE5A6',
+          'butter-yellow-light': '#FFF4D6',
+          'caramel-brown': '#A67C52',
+          'caramel-brown-dark': '#8B6F47',
+          'caramel-brown-light': '#C49A6C',
+          cream: '#FFFEF7',
+          'cream-dark': '#F5F5DC',
+          coconut: '#FAFAF5',
+          // Secondary Palette
+          'ube-purple': '#6B4C7A',
+          'mint-teal': '#7FB3B3',
+          'mint-teal-light': '#9FC7C7',
+          'mocha-butter': '#D4A574',
+          'mocha-butter-light': '#E8C19A',
+          // Legacy mappings for compatibility
+          beige: '#FAFAF5',
+          'beige-light': '#FFFEF7',
+          'beige-dark': '#F5F5DC',
+          gold: '#FFE5A6',
+          'gold-light': '#FFF4D6',
+          orange: '#D4A574',
+          'orange-light': '#E8C19A',
+          brown: '#A67C52',
+          'brown-dark': '#8B6F47',
+          'brown-light': '#C49A6C',
+          teal: '#7FB3B3',
+          'teal-light': '#9FC7C7',
           green: '#90EE90',
           'green-light': '#B0F5B0',
           red: '#D7263D',
           'red-dark': '#B81D24',
-          yellow: '#FFD700',
-          'yellow-light': '#FFE44D'
+          yellow: '#FFE5A6',
+          'yellow-light': '#FFF4D6'
         }
       },
       fontFamily: {
