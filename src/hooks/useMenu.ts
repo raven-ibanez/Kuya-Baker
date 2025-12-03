@@ -11,6 +11,13 @@ export const useMenu = () => {
     try {
       setLoading(true);
       
+      if (!supabase) {
+        console.warn('Supabase not available, menu items will be empty');
+        setMenuItems([]);
+        setLoading(false);
+        return;
+      }
+      
       // Fetch menu items with their variations and add-ons
       const { data: items, error: itemsError } = await supabase
         .from('menu_items')

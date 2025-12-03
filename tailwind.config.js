@@ -5,40 +5,40 @@ export default {
     extend: {
       colors: {
         baker: {
-          // Primary Palette - Modern Filipino
-          'butter-yellow': '#FFE5A6',
-          'butter-yellow-light': '#FFF4D6',
-          'caramel-brown': '#A67C52',
-          'caramel-brown-dark': '#8B6F47',
-          'caramel-brown-light': '#C49A6C',
+          // Primary Palette - Modern Asian (Brighter Tones)
+          'butter-yellow': '#FFE135',
+          'butter-yellow-light': '#FFF4A3',
+          'caramel-brown': '#C97D60',
+          'caramel-brown-dark': '#B8654A',
+          'caramel-brown-light': '#E09A7A',
           cream: '#FFFEF7',
           'cream-dark': '#F5F5DC',
           coconut: '#FAFAF5',
           // Secondary Palette
-          'ube-purple': '#6B4C7A',
-          'mint-teal': '#7FB3B3',
-          'mint-teal-light': '#9FC7C7',
-          'mocha-butter': '#D4A574',
-          'mocha-butter-light': '#E8C19A',
+          'ube-purple': '#9B59B6',
+          'mint-teal': '#4ECDC4',
+          'mint-teal-light': '#6FE5DD',
+          'mocha-butter': '#FF9F66',
+          'mocha-butter-light': '#FFB88C',
           // Legacy mappings for compatibility
           beige: '#FAFAF5',
           'beige-light': '#FFFEF7',
           'beige-dark': '#F5F5DC',
-          gold: '#FFE5A6',
-          'gold-light': '#FFF4D6',
-          orange: '#D4A574',
-          'orange-light': '#E8C19A',
-          brown: '#A67C52',
-          'brown-dark': '#8B6F47',
-          'brown-light': '#C49A6C',
-          teal: '#7FB3B3',
-          'teal-light': '#9FC7C7',
+          gold: '#FFE135',
+          'gold-light': '#FFF4A3',
+          orange: '#FF9F66',
+          'orange-light': '#FFB88C',
+          brown: '#C97D60',
+          'brown-dark': '#B8654A',
+          'brown-light': '#E09A7A',
+          teal: '#4ECDC4',
+          'teal-light': '#6FE5DD',
           green: '#90EE90',
           'green-light': '#B0F5B0',
           red: '#D7263D',
           'red-dark': '#B81D24',
-          yellow: '#FFE5A6',
-          'yellow-light': '#FFF4D6'
+          yellow: '#FFE135',
+          'yellow-light': '#FFF4A3'
         }
       },
       fontFamily: {

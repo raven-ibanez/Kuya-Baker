@@ -75,3 +75,18 @@ export interface SiteSettings {
   currency: string;
   currency_code: string;
 }
+
+// Hero Banner Types
+export interface HeroBannerFeature {
+  id: string;
+  title: string;
+  description: string;
+  iconType: 'clock' | 'star' | 'heart' | 'custom';
+  customIcon?: string; // SVG path or image URL for custom icons
+}
+
+export interface HeroBanner {
+  features: HeroBannerFeature[];
+  autoAdvanceInterval: number; // in milliseconds
+  enabled: boolean;
+}

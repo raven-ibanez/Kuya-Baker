@@ -12,6 +12,19 @@ export const useSiteSettings = () => {
       setLoading(true);
       setError(null);
 
+      if (!supabase) {
+        console.warn('Supabase not available, using default site settings');
+        setSiteSettings({
+          site_name: 'Kuya Baker',
+          site_logo: '',
+          site_description: '',
+          currency: '₱',
+          currency_code: 'PHP'
+        });
+        setLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase
         .from('site_settings')
         .select('*')

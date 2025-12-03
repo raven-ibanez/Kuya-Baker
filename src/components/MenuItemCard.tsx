@@ -161,14 +161,6 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
               </div>
             )}
             
-            {/* Weight/Size Badge - Bottom Left (Dark Brown) */}
-            {item.variations && item.variations.length > 0 && (
-              <div className="absolute bottom-4 left-4 bg-baker-brown-dark text-white px-4 py-3 rounded-lg shadow-lg">
-                <div className="text-2xl font-bold">{item.variations[0].name.toUpperCase().replace(/[^0-9]/g, '')}g</div>
-                <div className="text-sm font-semibold mt-1">LARGE</div>
-              </div>
-            )}
-            
             {/* #1 BEST SELLER Badge - Bottom Right (Orange) */}
             {item.popular && (
               <div className="absolute bottom-4 right-4 bg-baker-orange text-white px-4 py-3 rounded-lg shadow-lg">
@@ -252,7 +244,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
           ) : (
               <button
                 onClick={handleAddToCart}
-                className="bg-baker-orange text-white px-8 py-2.5 rounded-full hover:bg-orange-600 transition-all duration-200 font-semibold text-sm shadow-md hover:shadow-lg mb-5"
+                className="bg-baker-orange text-white px-8 py-2.5 rounded-full hover:bg-baker-orange-light transition-all duration-200 font-semibold text-sm shadow-md hover:shadow-lg mb-5"
               >
                 Add to Cart
               </button>
@@ -267,14 +259,6 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
           <p className="text-base italic text-baker-brown-dark mb-4">
             With Kuya Baker, it's Easy!
           </p>
-
-          {/* Ingredients Link */}
-          {item.addOns && item.addOns.length > 0 && (
-            <button className="text-sm text-blue-600 hover:text-blue-800 flex items-center">
-              <span>›</span>
-              <span className="ml-1">Ingredients</span>
-            </button>
-          )}
           </div>
         </div>
       </div>

@@ -22,6 +22,13 @@ export const usePaymentMethods = () => {
     try {
       setLoading(true);
       
+      if (!supabase) {
+        console.warn('Supabase not available, payment methods will be empty');
+        setPaymentMethods([]);
+        setLoading(false);
+        return;
+      }
+      
       const { data, error: fetchError } = await supabase
         .from('payment_methods')
         .select('*')

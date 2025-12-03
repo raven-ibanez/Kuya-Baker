@@ -1,47 +1,72 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useHeroBanner } from '../hooks/useHeroBanner';
+import { HeroBannerFeature } from '../types';
 
 const Hero: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const { heroBanner, loading, error } = useHeroBanner();
 
-  const features = [
-    {
-      icon: (
-        <svg className="w-16 h-16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      ),
-      title: "Freshly Baked Daily",
-      description: "Our bakery starts early every morning to bring you the freshest breads and pastries. Baked with love and served warm, ensuring every bite is perfect."
-    },
-    {
-      icon: (
-        <svg className="w-16 h-16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-        </svg>
-      ),
-      title: "All-Natural Ingredients",
-      description: "We use only the finest natural ingredients in our recipes. No artificial preservatives, no shortcuts—just pure, wholesome goodness in every bite."
-    },
-    {
-      icon: (
-        <svg className="w-16 h-16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-        </svg>
-      ),
-      title: "Made with Love",
-      description: "Every loaf, every pastry, every treat is crafted with passion and care. Experience the warmth and comfort of traditional baking in every product we offer."
-    }
-  ];
-
-  // Auto-advance carousel
+  // ALL HOOKS MUST BE CALLED BEFORE ANY CONDITIONAL RETURNS
+  // Auto-advance carousel - must be called every render
   useEffect(() => {
+    if (!heroBanner || !heroBanner.enabled || !heroBanner.features || heroBanner.features.length === 0) {
+      return;
+    }
+
+    const featuresLength = heroBanner.features.length;
+    const intervalMs = heroBanner.autoAdvanceInterval;
+
     const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % features.length);
-    }, 5000); // Change slide every 5 seconds
+      setCurrentSlide((prev) => (prev + 1) % featuresLength);
+    }, intervalMs);
 
     return () => clearInterval(interval);
-  }, [features.length]);
+  }, [heroBanner]);
+
+  const renderIcon = (feature: HeroBannerFeature) => {
+    const iconClass = "w-16 h-16";
+    
+    switch (feature.iconType) {
+      case 'clock':
+        return (
+          <svg className={iconClass} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        );
+      case 'star':
+        return (
+          <svg className={iconClass} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+          </svg>
+        );
+      case 'heart':
+        return (
+          <svg className={iconClass} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+          </svg>
+        );
+      case 'custom':
+        return feature.customIcon ? (
+          <img src={feature.customIcon} alt={feature.title} className={iconClass} />
+        ) : null;
+      default:
+        return null;
+    }
+  };
+
+  // Show loading state briefly, then render or hide
+  if (loading) {
+    // Return null during initial load to prevent flash
+    return null;
+  }
+
+  // Don't render if disabled, no features, or invalid data
+  if (!heroBanner || !heroBanner.enabled || !heroBanner.features || !heroBanner.features.length) {
+    return null;
+  }
+
+  const features = heroBanner.features;
 
   const goToSlide = (index: number) => {
     setCurrentSlide(index);
@@ -66,12 +91,12 @@ const Hero: React.FC = () => {
           >
             {features.map((feature, index) => (
               <div 
-                key={index} 
+                key={feature.id} 
                 className="min-w-full bg-baker-beige-light rounded-lg p-8 md:p-12 text-center"
               >
                 <div className="flex justify-center mb-6">
                   <div className="text-baker-brown-dark">
-                    {feature.icon}
+                    {renderIcon(feature)}
                   </div>
                 </div>
                 <h3 className="text-2xl md:text-3xl font-bold text-baker-brown-dark mb-4 font-fredoka">

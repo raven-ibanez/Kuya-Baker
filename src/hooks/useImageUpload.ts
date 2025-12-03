@@ -10,6 +10,10 @@ export const useImageUpload = () => {
       setUploading(true);
       setUploadProgress(0);
 
+      if (!supabase) {
+        throw new Error('Supabase is not available. Cannot upload image.');
+      }
+
       // Validate file type
       const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
       if (!allowedTypes.includes(file.type)) {

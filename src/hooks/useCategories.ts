@@ -20,6 +20,13 @@ export const useCategories = () => {
     try {
       setLoading(true);
       
+      if (!supabase) {
+        console.warn('Supabase not available, categories will be empty');
+        setCategories([]);
+        setLoading(false);
+        return;
+      }
+      
       const { data, error: fetchError } = await supabase
         .from('categories')
         .select('*')

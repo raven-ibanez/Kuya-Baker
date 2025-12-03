@@ -1,13 +1,25 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables');
+// Create a safe Supabase client - don't throw if env vars are missing
+// This prevents the entire app from crashing
+let supabaseInstance: SupabaseClient | null = null;
+
+try {
+  if (supabaseUrl && supabaseAnonKey) {
+    supabaseInstance = createClient(supabaseUrl, supabaseAnonKey);
+  } else {
+    console.warn('Supabase environment variables are missing. Some features may not work.');
+  }
+} catch (error) {
+  console.error('Failed to initialize Supabase client:', error);
+  supabaseInstance = null;
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Export as const to ensure it's stable
+export const supabase = supabaseInstance;
 
 export type Database = {
   public: {

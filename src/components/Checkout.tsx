@@ -89,25 +89,21 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totalPrice, onBack }) =>
       : '';
     
     const dineInInfo = serviceType === 'dine-in' 
-      ? `👥 Party Size: ${partySize} person${partySize !== 1 ? 's' : ''}\n🕐 Preferred Time: ${new Date(dineInTime).toLocaleString('en-US', { 
+      ? `👥 Party Size: ${partySize} person${partySize !== 1 ? 's' : ''}\n📅 Preferred Date: ${dineInTime ? new Date(dineInTime).toLocaleDateString('en-US', { 
           weekday: 'long', 
           year: 'numeric', 
           month: 'long', 
-          day: 'numeric', 
-          hour: '2-digit', 
-          minute: '2-digit' 
-        })}`
+          day: 'numeric'
+        }) : 'Not selected'}`
       : '';
     
     const deliveryInfo = serviceType === 'delivery' && deliveryDateTime
-      ? `📅 Delivery Date & Time: ${new Date(deliveryDateTime).toLocaleString('en-US', { 
+      ? `📅 Delivery Date: ${deliveryDateTime ? new Date(deliveryDateTime).toLocaleDateString('en-US', { 
           weekday: 'long', 
           year: 'numeric', 
           month: 'long', 
-          day: 'numeric', 
-          hour: '2-digit', 
-          minute: '2-digit' 
-        })}`
+          day: 'numeric'
+        }) : 'Not selected'}`
       : '';
     
     const orderDetails = `
@@ -220,7 +216,7 @@ Please confirm this order to proceed. Thank you for choosing Kuya Baker! 🥟
                   type="text"
                   value={customerName}
                   onChange={(e) => setCustomerName(e.target.value)}
-                  className="w-full px-4 py-3 border-3 border-baker-brown-dark rounded-xl focus:ring-2 focus:ring-baker-orange focus:border-baker-orange transition-all duration-200 bg-baker-beige-light font-nunito"
+                  className="w-full px-4 py-3 border-3 border-baker-brown-dark rounded-xl focus:ring-2 focus:ring-baker-orange focus:border-baker-orange transition-all duration-200 bg-baker-beige-light text-baker-brown-dark font-nunito"
                   placeholder="Enter your full name"
                   required
                 />
@@ -232,7 +228,7 @@ Please confirm this order to proceed. Thank you for choosing Kuya Baker! 🥟
                   type="tel"
                   value={contactNumber}
                   onChange={(e) => setContactNumber(e.target.value)}
-                  className="w-full px-4 py-3 border-3 border-baker-brown-dark rounded-xl focus:ring-2 focus:ring-baker-orange focus:border-baker-orange transition-all duration-200 bg-baker-beige-light font-nunito"
+                  className="w-full px-4 py-3 border-3 border-baker-brown-dark rounded-xl focus:ring-2 focus:ring-baker-orange focus:border-baker-orange transition-all duration-200 bg-baker-beige-light text-baker-brown-dark font-nunito"
                   placeholder="09XX XXX XXXX"
                   required
                 />
@@ -290,15 +286,16 @@ Please confirm this order to proceed. Thank you for choosing Kuya Baker! 🥟
                   </div>
 
                   <div>
-                    <label className="block text-sm font-fredoka font-semibold text-baker-brown-dark mb-2">Preferred Time *</label>
+                    <label className="block text-sm font-fredoka font-semibold text-baker-brown-dark mb-2">Preferred Date *</label>
                     <input
-                      type="datetime-local"
-                      value={dineInTime}
+                      type="date"
+                      value={dineInTime ? dineInTime.split('T')[0] : ''}
                       onChange={(e) => setDineInTime(e.target.value)}
-                      className="w-full px-4 py-3 border-3 border-baker-brown-dark rounded-xl focus:ring-2 focus:ring-baker-orange focus:border-baker-orange transition-all duration-200 bg-baker-beige-light font-nunito"
+                      min={new Date().toISOString().split('T')[0]}
+                      className="w-full px-4 py-3 border-3 border-baker-brown-dark rounded-xl focus:ring-2 focus:ring-baker-orange focus:border-baker-orange transition-all duration-200 bg-baker-beige-light text-baker-brown-dark font-nunito"
                       required
                     />
-                    <p className="text-xs text-baker-brown mt-1 font-nunito">Please select your preferred dining time</p>
+                    <p className="text-xs text-baker-brown mt-1 font-nunito">Please select your preferred dining date</p>
                   </div>
                 </>
               )}
@@ -336,7 +333,7 @@ Please confirm this order to proceed. Thank you for choosing Kuya Baker! 🥟
                         type="text"
                         value={customTime}
                         onChange={(e) => setCustomTime(e.target.value)}
-                        className="w-full px-4 py-3 border-3 border-baker-brown-dark rounded-xl focus:ring-2 focus:ring-baker-orange focus:border-baker-orange transition-all duration-200 bg-baker-beige-light font-nunito"
+                        className="w-full px-4 py-3 border-3 border-baker-brown-dark rounded-xl focus:ring-2 focus:ring-baker-orange focus:border-baker-orange transition-all duration-200 bg-baker-beige-light text-baker-brown-dark font-nunito"
                         placeholder="e.g., 45 minutes, 1 hour, 2:30 PM"
                         required
                       />
@@ -353,7 +350,7 @@ Please confirm this order to proceed. Thank you for choosing Kuya Baker! 🥟
                     <textarea
                       value={address}
                       onChange={(e) => setAddress(e.target.value)}
-                      className="w-full px-4 py-3 border-3 border-baker-brown-dark rounded-xl focus:ring-2 focus:ring-baker-orange focus:border-baker-orange transition-all duration-200 bg-baker-beige-light font-nunito"
+                      className="w-full px-4 py-3 border-3 border-baker-brown-dark rounded-xl focus:ring-2 focus:ring-baker-orange focus:border-baker-orange transition-all duration-200 bg-baker-beige-light text-baker-brown-dark font-nunito"
                       placeholder="Enter your complete delivery address"
                       rows={3}
                       required
@@ -366,37 +363,35 @@ Please confirm this order to proceed. Thank you for choosing Kuya Baker! 🥟
                       type="text"
                       value={landmark}
                       onChange={(e) => setLandmark(e.target.value)}
-                      className="w-full px-4 py-3 border-3 border-baker-brown-dark rounded-xl focus:ring-2 focus:ring-baker-orange focus:border-baker-orange transition-all duration-200 bg-baker-beige-light font-nunito"
+                      className="w-full px-4 py-3 border-3 border-baker-brown-dark rounded-xl focus:ring-2 focus:ring-baker-orange focus:border-baker-orange transition-all duration-200 bg-baker-beige-light text-baker-brown-dark font-nunito"
                       placeholder="e.g., Near McDonald's, Beside 7-Eleven, In front of school"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-fredoka font-semibold text-baker-brown-dark mb-2">Delivery Date & Time *</label>
+                    <label className="block text-sm font-fredoka font-semibold text-baker-brown-dark mb-2">Delivery Date *</label>
                     <div className="relative">
                       <Calendar className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-baker-brown-dark pointer-events-none z-10" />
                       <input
-                        type="datetime-local"
-                        value={deliveryDateTime}
+                        type="date"
+                        value={deliveryDateTime ? deliveryDateTime.split('T')[0] : ''}
                         onChange={(e) => setDeliveryDateTime(e.target.value)}
-                        className="w-full pl-12 pr-4 py-3 border-3 border-baker-brown-dark rounded-xl focus:ring-2 focus:ring-baker-orange focus:border-baker-orange transition-all duration-200 bg-baker-beige-light font-nunito"
-                        min={new Date().toISOString().slice(0, 16)}
+                        className="w-full pl-12 pr-4 py-3 border-3 border-baker-brown-dark rounded-xl focus:ring-2 focus:ring-baker-orange focus:border-baker-orange transition-all duration-200 bg-baker-beige-light text-baker-brown-dark font-nunito"
+                        min={new Date().toISOString().split('T')[0]}
                         required
                       />
                     </div>
                     <p className="text-xs text-baker-brown mt-1 font-nunito">
-                      Select the date and time when you want to receive your order
+                      Select the date when you want to receive your order
                     </p>
                     {deliveryDateTime && (
                       <div className="mt-2 p-3 bg-baker-gold-light rounded-lg border-2 border-baker-brown-dark">
                         <p className="text-sm font-fredoka font-semibold text-baker-brown-dark">
-                          📅 Scheduled Delivery: {new Date(deliveryDateTime).toLocaleString('en-US', { 
+                          📅 Scheduled Delivery: {new Date(deliveryDateTime).toLocaleDateString('en-US', { 
                             weekday: 'long', 
                             year: 'numeric', 
                             month: 'long', 
-                            day: 'numeric', 
-                            hour: '2-digit', 
-                            minute: '2-digit' 
+                            day: 'numeric'
                           })}
                         </p>
                       </div>
@@ -411,7 +406,7 @@ Please confirm this order to proceed. Thank you for choosing Kuya Baker! 🥟
                 <textarea
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  className="w-full px-4 py-3 border-3 border-baker-brown-dark rounded-xl focus:ring-2 focus:ring-baker-orange focus:border-baker-orange transition-all duration-200 bg-baker-beige-light font-nunito"
+                  className="w-full px-4 py-3 border-3 border-baker-brown-dark rounded-xl focus:ring-2 focus:ring-baker-orange focus:border-baker-orange transition-all duration-200 bg-baker-beige-light text-baker-brown-dark font-nunito"
                   placeholder="Any special requests or notes..."
                   rows={3}
                 />
@@ -523,13 +518,11 @@ Please confirm this order to proceed. Thank you for choosing Kuya Baker! 🥟
                   {landmark && <p className="text-sm text-baker-brown font-nunito">Landmark: {landmark}</p>}
                   {deliveryDateTime && (
                     <p className="text-sm text-baker-brown font-nunito">
-                      Delivery Date & Time: {new Date(deliveryDateTime).toLocaleString('en-US', { 
+                      Delivery Date: {new Date(deliveryDateTime).toLocaleDateString('en-US', { 
                         weekday: 'long', 
                         year: 'numeric', 
                         month: 'long', 
-                        day: 'numeric', 
-                        hour: '2-digit', 
-                        minute: '2-digit' 
+                        day: 'numeric'
                       })}
                     </p>
                   )}
@@ -546,13 +539,11 @@ Please confirm this order to proceed. Thank you for choosing Kuya Baker! 🥟
                     Party Size: {partySize} person{partySize !== 1 ? 's' : ''}
                   </p>
                   <p className="text-sm text-baker-brown font-nunito">
-                    Preferred Time: {dineInTime ? new Date(dineInTime).toLocaleString('en-US', { 
+                    Preferred Date: {dineInTime ? new Date(dineInTime).toLocaleDateString('en-US', { 
                       weekday: 'long', 
                       year: 'numeric', 
                       month: 'long', 
-                      day: 'numeric', 
-                      hour: '2-digit', 
-                      minute: '2-digit' 
+                      day: 'numeric'
                     }) : 'Not selected'}
                   </p>
                 </>
