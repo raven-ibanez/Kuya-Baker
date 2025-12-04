@@ -92,19 +92,39 @@ const Hero: React.FC = () => {
             {features.map((feature, index) => (
               <div 
                 key={feature.id} 
-                className="min-w-full bg-baker-beige-light rounded-lg p-8 md:p-12 text-center"
+                className={`min-w-full rounded-lg p-8 md:p-12 text-center relative overflow-hidden ${
+                  feature.image ? '' : 'bg-baker-beige-light'
+                }`}
+                style={feature.image ? {
+                  backgroundImage: `url(${feature.image})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat'
+                } : {}}
               >
-                <div className="flex justify-center mb-6">
-                  <div className="text-baker-brown-dark">
-                    {renderIcon(feature)}
+                {/* Overlay for text readability when image is present */}
+                {feature.image && (
+                  <div className="absolute inset-0 bg-black/40 rounded-lg"></div>
+                )}
+                
+                {/* Content with relative positioning to appear above overlay */}
+                <div className="relative z-10">
+                  <div className="flex justify-center mb-6">
+                    <div className={feature.image ? "text-white" : "text-baker-brown-dark"}>
+                      {renderIcon(feature)}
+                    </div>
                   </div>
+                  <h3 className={`text-2xl md:text-3xl font-bold mb-4 font-fredoka ${
+                    feature.image ? 'text-white' : 'text-baker-brown-dark'
+                  }`}>
+                    {feature.title}
+                  </h3>
+                  <p className={`text-sm md:text-base leading-relaxed max-w-2xl mx-auto font-nunito ${
+                    feature.image ? 'text-white' : 'text-baker-brown'
+                  }`}>
+                    {feature.description}
+                  </p>
                 </div>
-                <h3 className="text-2xl md:text-3xl font-bold text-baker-brown-dark mb-4 font-fredoka">
-                  {feature.title}
-                </h3>
-                <p className="text-sm md:text-base text-baker-brown leading-relaxed max-w-2xl mx-auto font-nunito">
-                  {feature.description}
-                </p>
               </div>
             ))}
           </div>

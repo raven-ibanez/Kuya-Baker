@@ -83,6 +83,7 @@ export interface HeroBannerFeature {
   description: string;
   iconType: 'clock' | 'star' | 'heart' | 'custom';
   customIcon?: string; // SVG path or image URL for custom icons
+  image?: string; // Background image URL that covers the whole section
 }
 
 export interface HeroBanner {

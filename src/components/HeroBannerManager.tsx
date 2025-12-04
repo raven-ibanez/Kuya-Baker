@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Save, Plus, Edit, Trash2, X, GripVertical, Clock, Star, Heart } from 'lucide-react';
 import { useHeroBanner } from '../hooks/useHeroBanner';
 import { HeroBannerFeature } from '../types';
+import ImageUpload from './ImageUpload';
 
 const HeroBannerManager: React.FC = () => {
   const { heroBanner, loading, updateHeroBanner, addFeature, updateFeature, deleteFeature } = useHeroBanner();
@@ -11,7 +12,8 @@ const HeroBannerManager: React.FC = () => {
     title: '',
     description: '',
     iconType: 'clock' as 'clock' | 'star' | 'heart' | 'custom',
-    customIcon: ''
+    customIcon: '',
+    image: ''
   });
   const [autoAdvanceInterval, setAutoAdvanceInterval] = useState(5000);
   const [enabled, setEnabled] = useState(true);
@@ -37,7 +39,8 @@ const HeroBannerManager: React.FC = () => {
       title: '',
       description: '',
       iconType: 'clock',
-      customIcon: ''
+      customIcon: '',
+      image: ''
     });
     setIsEditing(true);
   };
@@ -48,7 +51,8 @@ const HeroBannerManager: React.FC = () => {
       title: feature.title,
       description: feature.description,
       iconType: feature.iconType,
-      customIcon: feature.customIcon || ''
+      customIcon: feature.customIcon || '',
+      image: feature.image || ''
     });
     setIsEditing(true);
   };
@@ -71,7 +75,8 @@ const HeroBannerManager: React.FC = () => {
         title: '',
         description: '',
         iconType: 'clock',
-        customIcon: ''
+        customIcon: '',
+        image: ''
       });
     } catch (error) {
       console.error('Error saving feature:', error);
@@ -115,7 +120,8 @@ const HeroBannerManager: React.FC = () => {
       title: '',
       description: '',
       iconType: 'clock',
-      customIcon: ''
+      customIcon: '',
+      image: ''
     });
   };
 
@@ -305,6 +311,20 @@ const HeroBannerManager: React.FC = () => {
                 </div>
               </div>
 
+              <div>
+                <label className="block text-sm font-fredoka font-semibold text-baker-brown-dark mb-2">
+                  Background Image (Optional)
+                </label>
+                <p className="text-xs text-baker-brown mb-3 font-nunito">
+                  Upload an image that will cover the entire section as a background. The image will be displayed behind the text with an overlay for readability.
+                </p>
+                <ImageUpload
+                  currentImage={formData.image}
+                  onImageChange={(imageUrl) => setFormData({ ...formData, image: imageUrl || '' })}
+                  label="Background Image"
+                />
+              </div>
+
               <div className="flex space-x-2">
                 <button
                   onClick={handleSaveFeature}
@@ -344,6 +364,19 @@ const HeroBannerManager: React.FC = () => {
                       <p className="text-sm text-baker-brown font-nunito leading-relaxed">
                         {feature.description}
                       </p>
+                      {feature.image && (
+                        <div className="mt-3 flex items-center space-x-2">
+                          <span className="text-xs text-baker-brown font-nunito">Background Image:</span>
+                          <img 
+                            src={feature.image} 
+                            alt="Background preview" 
+                            className="w-16 h-10 object-cover rounded border border-baker-brown-dark"
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none';
+                            }}
+                          />
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
