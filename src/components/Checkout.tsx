@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Clock, Calendar } from 'lucide-react';
+import { ArrowLeft, Calendar } from 'lucide-react';
 import { CartItem, PaymentMethod, ServiceType } from '../types';
 import { usePaymentMethods } from '../hooks/usePaymentMethods';
 import { saveCustomerData, loadCustomerData } from '../utils/cookies';
@@ -18,7 +18,7 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totalPrice, onBack }) =>
   const savedData = loadCustomerData();
   const [customerName, setCustomerName] = useState(savedData.customerName);
   const [contactNumber, setContactNumber] = useState(savedData.contactNumber);
-  const [serviceType, setServiceType] = useState<ServiceType>(savedData.serviceType as ServiceType || 'dine-in');
+  const [serviceType, setServiceType] = useState<ServiceType>(savedData.serviceType as ServiceType || 'pickup');
   const [address, setAddress] = useState(savedData.address);
   const [landmark, setLandmark] = useState(savedData.landmark);
   const [pickupTime, setPickupTime] = useState(savedData.pickupTime);
@@ -84,37 +84,23 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totalPrice, onBack }) =>
   };
 
   const handlePlaceOrder = () => {
-    const timeInfo = serviceType === 'pickup' 
-      ? (pickupTime === 'custom' ? customTime : `${pickupTime} minutes`)
-      : '';
-    
-    const dineInInfo = serviceType === 'dine-in' 
-      ? `👥 Party Size: ${partySize} person${partySize !== 1 ? 's' : ''}\n📅 Preferred Date: ${dineInTime ? new Date(dineInTime).toLocaleDateString('en-US', { 
-          weekday: 'long', 
-          year: 'numeric', 
-          month: 'long', 
-          day: 'numeric'
-        }) : 'Not selected'}`
-      : '';
-    
-    const deliveryInfo = serviceType === 'delivery' && deliveryDateTime
-      ? `📅 Delivery Date: ${deliveryDateTime ? new Date(deliveryDateTime).toLocaleDateString('en-US', { 
-          weekday: 'long', 
-          year: 'numeric', 
-          month: 'long', 
-          day: 'numeric'
-        }) : 'Not selected'}`
-      : '';
-    
-    const orderDetails = `
+    try {
+      const deliveryInfo = serviceType === 'delivery' && deliveryDateTime
+        ? `📅 Delivery Date: ${deliveryDateTime ? new Date(deliveryDateTime).toLocaleDateString('en-US', { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric'
+          }) : 'Not selected'}`
+        : '';
+      
+      const orderDetails = `
 🛒 Kuya Baker ORDER
 
 👤 Customer: ${customerName}
 📞 Contact: ${contactNumber}
 📍 Service: ${serviceType.charAt(0).toUpperCase() + serviceType.slice(1)}
 ${serviceType === 'delivery' ? `🏠 Address: ${address}${landmark ? `\n🗺️ Landmark: ${landmark}` : ''}${deliveryInfo ? `\n${deliveryInfo}` : ''}` : ''}
-${serviceType === 'pickup' ? `⏰ Pickup Time: ${timeInfo}` : ''}
-${serviceType === 'dine-in' ? dineInInfo : ''}
 
 
 📋 ORDER DETAILS:
@@ -142,20 +128,30 @@ ${serviceType === 'delivery' ? `🛵 DELIVERY FEE:` : ''}
 
 ${notes ? `📝 Notes: ${notes}` : ''}
 
-Please confirm this order to proceed. Thank you for choosing Kuya Baker! 🥟
-    `.trim();
+Please send proof of payment via messenger to confirm. Thank you!
+      `.trim();
 
-    const encodedMessage = encodeURIComponent(orderDetails);
-    const messengerUrl = `https://m.me/463644283495431?text=${encodedMessage}`;
-    
-    window.open(messengerUrl, '_blank');
-    
+      const encodedMessage = encodeURIComponent(orderDetails);
+      const messengerUrl = `https://m.me/463644283495431?text=${encodedMessage}`;
+      
+      // Open Messenger in a new tab/window
+      const messengerWindow = window.open(messengerUrl, '_blank', 'noopener,noreferrer');
+      
+      // Check if popup was blocked
+      if (!messengerWindow || messengerWindow.closed || typeof messengerWindow.closed === 'undefined') {
+        // Popup was blocked, try using window.location as fallback
+        window.location.href = messengerUrl;
+      }
+    } catch (error) {
+      console.error('Error opening Messenger:', error);
+      // Fallback: try opening with a simpler URL
+      const fallbackUrl = `https://m.me/463644283495431`;
+      window.location.href = fallbackUrl;
+    }
   };
 
   const isDetailsValid = customerName && contactNumber && 
-    (serviceType !== 'delivery' || (address && deliveryDateTime)) && 
-    (serviceType !== 'pickup' || (pickupTime !== 'custom' || customTime)) &&
-    (serviceType !== 'dine-in' || (partySize > 0 && dineInTime));
+    (serviceType !== 'delivery' || (address && deliveryDateTime));
 
   if (step === 'details') {
     return (
@@ -237,9 +233,8 @@ Please confirm this order to proceed. Thank you for choosing Kuya Baker! 🥟
               {/* Service Type */}
               <div>
                 <label className="block text-sm font-fredoka font-semibold text-baker-brown-dark mb-3">Service Type *</label>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-2 gap-3">
                   {[
-                    { value: 'dine-in', label: 'Dine In', icon: '🪑' },
                     { value: 'pickup', label: 'Pickup', icon: '🚶' },
                     { value: 'delivery', label: 'Delivery', icon: '🛵' }
                   ].map((option) => (
@@ -259,88 +254,6 @@ Please confirm this order to proceed. Thank you for choosing Kuya Baker! 🥟
                   ))}
                 </div>
               </div>
-
-              {/* Dine-in Details */}
-              {serviceType === 'dine-in' && (
-                <>
-                  <div>
-                    <label className="block text-sm font-fredoka font-semibold text-baker-brown-dark mb-2">Party Size *</label>
-                    <div className="flex items-center space-x-4">
-                      <button
-                        type="button"
-                        onClick={() => setPartySize(Math.max(1, partySize - 1))}
-                        className="w-10 h-10 rounded-xl border-3 border-baker-brown-dark flex items-center justify-center text-baker-brown-dark hover:bg-baker-gold-light transition-all duration-200 retro-button"
-                      >
-                        -
-                      </button>
-                      <span className="text-2xl font-fredoka font-bold text-baker-brown-dark min-w-[3rem] text-center">{partySize}</span>
-                      <button
-                        type="button"
-                        onClick={() => setPartySize(Math.min(20, partySize + 1))}
-                        className="w-10 h-10 rounded-xl border-3 border-baker-brown-dark flex items-center justify-center text-baker-brown-dark hover:bg-baker-gold-light transition-all duration-200 retro-button"
-                      >
-                        +
-                      </button>
-                      <span className="text-sm text-baker-brown ml-2 font-nunito">person{partySize !== 1 ? 's' : ''}</span>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-fredoka font-semibold text-baker-brown-dark mb-2">Preferred Date *</label>
-                    <input
-                      type="date"
-                      value={dineInTime ? dineInTime.split('T')[0] : ''}
-                      onChange={(e) => setDineInTime(e.target.value)}
-                      min={new Date().toISOString().split('T')[0]}
-                      className="w-full px-4 py-3 border-3 border-baker-brown-dark rounded-xl focus:ring-2 focus:ring-baker-orange focus:border-baker-orange transition-all duration-200 bg-baker-beige-light text-baker-brown-dark font-nunito"
-                      required
-                    />
-                    <p className="text-xs text-baker-brown mt-1 font-nunito">Please select your preferred dining date</p>
-                  </div>
-                </>
-              )}
-
-              {/* Pickup Time Selection */}
-              {serviceType === 'pickup' && (
-                <div>
-                  <label className="block text-sm font-fredoka font-semibold text-baker-brown-dark mb-3">Pickup Time *</label>
-                  <div className="space-y-3">
-                    <div className="grid grid-cols-2 gap-3">
-                      {[
-                        { value: '5-10', label: '5-10 minutes' },
-                        { value: '15-20', label: '15-20 minutes' },
-                        { value: '25-30', label: '25-30 minutes' },
-                        { value: 'custom', label: 'Custom Time' }
-                      ].map((option) => (
-                        <button
-                          key={option.value}
-                          type="button"
-                          onClick={() => setPickupTime(option.value)}
-                          className={`p-3 rounded-xl border-3 transition-all duration-200 text-sm retro-button font-fredoka font-semibold ${
-                            pickupTime === option.value
-                              ? 'border-baker-brown-dark bg-baker-orange text-white'
-                              : 'border-baker-brown-dark bg-baker-beige-light text-baker-brown-dark hover:bg-baker-gold-light'
-                          }`}
-                        >
-                          <Clock className="h-4 w-4 mx-auto mb-1" />
-                          {option.label}
-                        </button>
-                      ))}
-                    </div>
-                    
-                    {pickupTime === 'custom' && (
-                      <input
-                        type="text"
-                        value={customTime}
-                        onChange={(e) => setCustomTime(e.target.value)}
-                        className="w-full px-4 py-3 border-3 border-baker-brown-dark rounded-xl focus:ring-2 focus:ring-baker-orange focus:border-baker-orange transition-all duration-200 bg-baker-beige-light text-baker-brown-dark font-nunito"
-                        placeholder="e.g., 45 minutes, 1 hour, 2:30 PM"
-                        required
-                      />
-                    )}
-                  </div>
-                </div>
-              )}
 
               {/* Delivery Address */}
               {serviceType === 'delivery' && (
@@ -526,26 +439,6 @@ Please confirm this order to proceed. Thank you for choosing Kuya Baker! 🥟
                       })}
                     </p>
                   )}
-                </>
-              )}
-              {serviceType === 'pickup' && (
-                <p className="text-sm text-baker-brown font-nunito">
-                  Pickup Time: {pickupTime === 'custom' ? customTime : `${pickupTime} minutes`}
-                </p>
-              )}
-              {serviceType === 'dine-in' && (
-                <>
-                  <p className="text-sm text-baker-brown font-nunito">
-                    Party Size: {partySize} person{partySize !== 1 ? 's' : ''}
-                  </p>
-                  <p className="text-sm text-baker-brown font-nunito">
-                    Preferred Date: {dineInTime ? new Date(dineInTime).toLocaleDateString('en-US', { 
-                      weekday: 'long', 
-                      year: 'numeric', 
-                      month: 'long', 
-                      day: 'numeric'
-                    }) : 'Not selected'}
-                  </p>
                 </>
               )}
             </div>

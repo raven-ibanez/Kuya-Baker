@@ -102,7 +102,7 @@ export const loadCustomerData = (): {
   return {
     customerName: getCookie('kuya_baker_customer_name') || '',
     contactNumber: getCookie('kuya_baker_contact_number') || '',
-    serviceType: getCookie('kuya_baker_service_type') || 'dine-in',
+    serviceType: getCookie('kuya_baker_service_type') || 'pickup',
     address: getCookie('kuya_baker_address') || '',
     landmark: getCookie('kuya_baker_landmark') || '',
     pickupTime: getCookie('kuya_baker_pickup_time') || '5-10',
